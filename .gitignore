@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# env and secrets
+.env
+.env.*
+!.env.example
+
+# tests
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# local data
+*.sqlite
+pgdata/
+backups/
+*.dump
+
+# editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+*.log
