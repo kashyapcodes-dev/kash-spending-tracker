@@ -1,5 +1,5 @@
 {
-  "name": "@kash/app-web",
+  "name": "@kash/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest"
   },
   "dependencies": {
