@@ -8,6 +8,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
+    "@types/node": "^22.15.31",
     "typescript": "*",
     "vitest": "*"
   },
