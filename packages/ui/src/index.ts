@@ -1,2 +1,2 @@
 // @kash/ui - UI component stubs
-export const ui = { init: () => {}, Button: () => {} };
+export const uiVersion = "0.0.1";

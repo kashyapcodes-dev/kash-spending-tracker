@@ -2,5 +2,14 @@
   "name": "@kash/ui",
   "version": "0.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.31",
+    "typescript": "*",
+    "vitest": "*"
+  }
 }

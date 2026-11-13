@@ -1,2 +1,2 @@
-// @kash/integrations - Integration stubs
-export const integrations = { init: () => {}, connect: () => Promise.resolve({}) };
+// @kash/integrations - integration stubs
+export const integrationsVersion = "0.0.1";
