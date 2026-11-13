@@ -17,6 +17,8 @@
     "format:check": "turbo run format:check"
   },
   "devDependencies": {
-    "turbo": "^2.11.11"
+    "@tsconfig/node20": "^20.1.11",
+    "turbo": "^2.11.11",
+    "typescript": "^7.0.2"
   }
 }
