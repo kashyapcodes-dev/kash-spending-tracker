@@ -95,7 +95,17 @@ importers:
         specifier: ^3.0.9
         version: 3.2.7(@types/node@20.19.43)(jiti@1.21.7)
 
-  packages/api-client: {}
+  packages/api-client:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.15.31
+        version: 22.20.5
+      typescript:
+        specifier: '*'
+        version: 7.0.2
+      vitest:
+        specifier: '*'
+        version: 3.2.7(@types/node@22.20.5)(jiti@1.21.7)
 
   packages/config: {}
 
@@ -139,9 +149,29 @@ importers:
         specifier: '*'
         version: 3.2.7(@types/node@22.20.5)(jiti@1.21.7)
 
-  packages/integrations: {}
+  packages/integrations:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.15.31
+        version: 22.20.5
+      typescript:
+        specifier: '*'
+        version: 7.0.2
+      vitest:
+        specifier: '*'
+        version: 3.2.7(@types/node@22.20.5)(jiti@1.21.7)
 
-  packages/ui: {}
+  packages/ui:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.15.31
+        version: 22.20.5
+      typescript:
+        specifier: '*'
+        version: 7.0.2
+      vitest:
+        specifier: '*'
+        version: 3.2.7(@types/node@22.20.5)(jiti@1.21.7)
 
 packages:
 
