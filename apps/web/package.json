@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@kash/contract": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "lucide-react": "^1.72.0",
@@ -30,6 +31,7 @@
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.8",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "zod": "^3.25.0"
   }
 }
