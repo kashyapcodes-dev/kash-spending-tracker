@@ -55,6 +55,43 @@ importers:
         specifier: ^3.0.9
         version: 3.2.7(@types/node@20.19.43)(jiti@1.21.7)
 
+  apps/web:
+    dependencies:
+      next:
+        specifier: ^15.0.0
+        version: 15.5.29(@types/node@20.19.43)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.43
+      '@types/react':
+        specifier: ^19
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.3.0(@types/react@19.3.0)
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.6.2(postcss@8.5.32)
+      postcss:
+        specifier: ^8.5
+        version: 8.5.32
+      tailwindcss:
+        specifier: ^3.4.17
+        version: 3.4.19
+      typescript:
+        specifier: ~5.8
+        version: 5.8.3
+      vitest:
+        specifier: ^3.0.9
+        version: 3.2.7(@types/node@20.19.43)(jiti@1.21.7)
+
   packages/api-client: {}
 
   packages/config: {}
