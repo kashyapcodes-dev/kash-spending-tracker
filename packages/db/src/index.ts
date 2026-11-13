@@ -1,6 +1,2 @@
 // @kash/db - database layer stubs
-export const db = {
-  connect: () => Promise.resolve({}),
-  disconnect: () => Promise.resolve(),
-  query: () => Promise.resolve([]),
-};
+export const dbVersion = "0.0.1";
