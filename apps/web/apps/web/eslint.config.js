@@ -27,6 +27,14 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       '@kash/import-boundary': 'error',
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            { group: ['*.js', '*.jsx'], message: 'Use .ts/.tsx instead' },
+          ],
+        },
+      ],
     },
     settings: {
       'import/resolver': { node: { extensions: ['.js', '.jsx', '.ts', '.tsx'] } },
