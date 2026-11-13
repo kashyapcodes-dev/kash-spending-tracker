@@ -1,14 +1,18 @@
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Kash</h1>
-        <p className="text-gray-700 mb-8">
-          <a href="https://github.com/kashyap/kash-spending-tracker" target="_blank" rel="noopener noreferrer">
+        <h1 className="text-3xl font-bold text-foreground mb-6">Kash</h1>
+        <p className="text-muted-foreground mb-8">
+          <Link href="https://github.com/kashyap/kash-spending-tracker" target="_blank" rel="noopener noreferrer">
             Kash Spending Tracker - Track your spending habits and manage your finances.
-          </a>
+          </Link>
         </p>
+        <Button>Get Started</Button>
       </div>
     </main>
-  );
+  )
 }
