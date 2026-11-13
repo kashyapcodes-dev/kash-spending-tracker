@@ -12,17 +12,20 @@ Thank you for your interest in contributing!
 ## Development Workflow
 
 ### Branching
+
 - Use descriptive branch names: `feat/feature-name`, `fix/bug-fix-description`
 - Create a feature branch from main
 - Submit a pull request when ready
 
 ### Code Style
+
 - TypeScript with strict mode enabled
 - Prettier for formatting (see `.prettierrc`)
 - ESLint for linting (see `eslint.config.js`)
 - Follow existing code patterns in the codebase
 
 ### Testing
+
 - Write tests before or alongside code changes
 - Run tests with: `pnpm test`
 - E2E tests with Playwright: `pnpm test:e2e`
@@ -30,6 +33,7 @@ Thank you for your interest in contributing!
 ## Commit Messages
 
 Follow conventional commits:
+
 - `feat:` - New features
 - `fix:` - Bug fixes
 - `chore:` - Maintenance tasks
@@ -48,6 +52,7 @@ Example: `feat(m0): add budget tracking feature`
 ## Code Review
 
 Reviewers will check for:
+
 - Correctness and functionality
 - Code quality and style
 - Test coverage

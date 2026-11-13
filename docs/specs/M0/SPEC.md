@@ -40,9 +40,9 @@ None.
 
 ## API endpoints
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/health` | Liveness. Returns `200 { "status": "ok" }`. Extended in M2 with a database check. | Public. Returns no user or system detail. |
+| Method | Path             | Purpose                                                                           | Authz                                     |
+| ------ | ---------------- | --------------------------------------------------------------------------------- | ----------------------------------------- |
+| GET    | `/api/v1/health` | Liveness. Returns `200 { "status": "ok" }`. Extended in M2 with a database check. | Public. Returns no user or system detail. |
 
 ## UI
 

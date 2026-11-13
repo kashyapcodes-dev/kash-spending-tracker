@@ -5,11 +5,16 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,md}\""
   },
   "devDependencies": {
     "@types/node": "^22.15.31",
-    "typescript": "*",
-    "vitest": "*"
+    "eslint": "^9.0.0",
+    "typescript": "~5.8.0",
+    "vitest": "*",
+    "prettier": "^3.3.3"
   }
 }

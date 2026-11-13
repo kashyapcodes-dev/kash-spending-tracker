@@ -56,14 +56,14 @@ category_targets
 ```jsonc
 {
   "version": 1,
-  "dateRange": { "preset": "this_month" },          // dashboard-level range
+  "dateRange": { "preset": "this_month" }, // dashboard-level range
   "widgets": [
     {
       "id": "<uuid>",
-      "layout": { "x": 0, "y": 0, "w": 3, "h": 2 },  // 12-column grid; mobile stacks by y then x
-      "spec": { /* WidgetSpec */ }
-    }
-  ]
+      "layout": { "x": 0, "y": 0, "w": 3, "h": 2 }, // 12-column grid; mobile stacks by y then x
+      "spec": {/* WidgetSpec */},
+    },
+  ],
 }
 ```
 
@@ -74,29 +74,30 @@ At most 40 widgets per dashboard and 20 dashboards per user per budget.
 ```jsonc
 {
   "version": 1,
-  "type": "bar",                       // "stat" | "pie" | "bar" | "line" | "table" | "budget-vs-actual"
-  "title": "Spending by category",     // 1 to 80 chars, plain text
-  "query": { /* ADR-0003 query */ },
-  "display": {                         // per type; all optional, all enumerated or bounded
-    "format": "currency",              // "currency" | "number" | "percent"
+  "type": "bar", // "stat" | "pie" | "bar" | "line" | "table" | "budget-vs-actual"
+  "title": "Spending by category", // 1 to 80 chars, plain text
+  "query": {/* ADR-0003 query */},
+  "display": {
+    // per type; all optional, all enumerated or bounded
+    "format": "currency", // "currency" | "number" | "percent"
     "showCompare": true,
     "stacked": false,
     "orientation": "vertical",
     "showLegend": true,
-    "maxItems": 8                      // remaining groups are merged into "Other"
-  }
+    "maxItems": 8, // remaining groups are merged into "Other"
+  },
 }
 ```
 
 The schema is `.strict()` and is a discriminated union on `type`. Each type restricts which query shapes it accepts:
 
-| Type | Query constraint | Notes |
-|---|---|---|
-| `stat` | `groupBy: "none"`, measure `sum`, `count` or `avg` | Optional `compare` shows the change against the previous period |
-| `pie` | `groupBy` `category` or `type`, measure `sum` or `count` | |
-| `bar` | any `groupBy` except `none` | |
-| `line` | `groupBy` `day`, `week`, `month` or `year` | Missing buckets are filled with zero |
-| `table` | measure `rows`, or any grouped query | |
+| Type               | Query constraint                                                            | Notes                                                                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `stat`             | `groupBy: "none"`, measure `sum`, `count` or `avg`                          | Optional `compare` shows the change against the previous period                                                                                             |
+| `pie`              | `groupBy` `category` or `type`, measure `sum` or `count`                    |                                                                                                                                                             |
+| `bar`              | any `groupBy` except `none`                                                 |                                                                                                                                                             |
+| `line`             | `groupBy` `day`, `week`, `month` or `year`                                  | Missing buckets are filled with zero                                                                                                                        |
+| `table`            | measure `rows`, or any grouped query                                        |                                                                                                                                                             |
 | `budget-vs-actual` | source `category_targets`; filters limited to `categoryIds` and `dateRange` | Per category: target for the range, actual expense, remaining. Monthly targets are pro-rated by the inclusive day count when the range is not whole months. |
 
 Titles and labels are rendered as text, never as HTML.
@@ -114,20 +115,20 @@ Titles and labels are rendered as text, never as HTML.
 
 ## API endpoints
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/widget-types` | The registry's types with their JSON Schemas and default specs, for clients and for the AI tool in M7 | Authenticated. Static metadata; no budget data. |
-| POST | `/api/v1/budgets/{budgetId}/widgets/query` | Run 1 to 40 queries `{ queries: [...], dateRange? }` → results in the same order; a failed query returns an error object in its slot | Member. The budget comes only from the path; category IDs in a query are resolved inside this budget and foreign IDs match nothing. Never writes. |
-| POST | `/api/v1/budgets/{budgetId}/widgets/validate` | Validate a `WidgetSpec` without running it; returns issues | Member |
-| GET | `/api/v1/budgets/{budgetId}/dashboards` | The caller's dashboards for this budget | Member; filtered to `user_id` = caller |
-| POST | `/api/v1/budgets/{budgetId}/dashboards` | Create `{ name, doc? , templateId? }` | Member (viewers may arrange their own dashboards; a dashboard is a personal view, not budget data) |
-| GET | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}` | Get one | Member, and the dashboard's `user_id` must be the caller (`404` otherwise) |
-| PUT | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}` | Replace `name`, `doc`, `isDefault`. Uses `updatedAt` as a precondition; a stale write returns `409`. | Member, and owner of the dashboard (`404` otherwise) |
-| DELETE | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}` | Delete; if it was the default, the most recently updated remaining one becomes default | Member, and owner of the dashboard (`404` otherwise) |
-| GET | `/api/v1/dashboard-templates` | List templates with their docs | Authenticated. Static. |
-| GET | `/api/v1/budgets/{budgetId}/category-targets` | List targets | Member |
-| PUT | `/api/v1/budgets/{budgetId}/category-targets/{categoryId}` | Set `{ amountCents }` for a category | Editor; category must belong to the budget |
-| DELETE | `/api/v1/budgets/{budgetId}/category-targets/{categoryId}` | Remove a target | Editor; category must belong to the budget |
+| Method | Path                                                       | Purpose                                                                                                                              | Authz                                                                                                                                             |
+| ------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/v1/widget-types`                                     | The registry's types with their JSON Schemas and default specs, for clients and for the AI tool in M7                                | Authenticated. Static metadata; no budget data.                                                                                                   |
+| POST   | `/api/v1/budgets/{budgetId}/widgets/query`                 | Run 1 to 40 queries `{ queries: [...], dateRange? }` → results in the same order; a failed query returns an error object in its slot | Member. The budget comes only from the path; category IDs in a query are resolved inside this budget and foreign IDs match nothing. Never writes. |
+| POST   | `/api/v1/budgets/{budgetId}/widgets/validate`              | Validate a `WidgetSpec` without running it; returns issues                                                                           | Member                                                                                                                                            |
+| GET    | `/api/v1/budgets/{budgetId}/dashboards`                    | The caller's dashboards for this budget                                                                                              | Member; filtered to `user_id` = caller                                                                                                            |
+| POST   | `/api/v1/budgets/{budgetId}/dashboards`                    | Create `{ name, doc? , templateId? }`                                                                                                | Member (viewers may arrange their own dashboards; a dashboard is a personal view, not budget data)                                                |
+| GET    | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}`      | Get one                                                                                                                              | Member, and the dashboard's `user_id` must be the caller (`404` otherwise)                                                                        |
+| PUT    | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}`      | Replace `name`, `doc`, `isDefault`. Uses `updatedAt` as a precondition; a stale write returns `409`.                                 | Member, and owner of the dashboard (`404` otherwise)                                                                                              |
+| DELETE | `/api/v1/budgets/{budgetId}/dashboards/{dashboardId}`      | Delete; if it was the default, the most recently updated remaining one becomes default                                               | Member, and owner of the dashboard (`404` otherwise)                                                                                              |
+| GET    | `/api/v1/dashboard-templates`                              | List templates with their docs                                                                                                       | Authenticated. Static.                                                                                                                            |
+| GET    | `/api/v1/budgets/{budgetId}/category-targets`              | List targets                                                                                                                         | Member                                                                                                                                            |
+| PUT    | `/api/v1/budgets/{budgetId}/category-targets/{categoryId}` | Set `{ amountCents }` for a category                                                                                                 | Editor; category must belong to the budget                                                                                                        |
+| DELETE | `/api/v1/budgets/{budgetId}/category-targets/{categoryId}` | Remove a target                                                                                                                      | Editor; category must belong to the budget                                                                                                        |
 
 When a member is removed from a budget (M4), their dashboards for it are deleted.
 

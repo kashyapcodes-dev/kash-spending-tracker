@@ -53,6 +53,6 @@ Security-related updates will be released promptly. Critical fixes may be backpo
 
 ## Version History
 
-| Version | Release Date | Security Fixes |
-|---------|-------------|----------------|
-| TBD     | TBD         | Initial release |
+| Version | Release Date | Security Fixes  |
+| ------- | ------------ | --------------- |
+| TBD     | TBD          | Initial release |

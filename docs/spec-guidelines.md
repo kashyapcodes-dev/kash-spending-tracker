@@ -26,6 +26,7 @@ All M0 specifications must include:
 ## Review Checklist
 
 Before submitting a specification:
+
 - [ ] All required sections are present
 - [ ] Headings follow the naming convention
 - [ ] Code examples are valid

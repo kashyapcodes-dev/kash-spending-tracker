@@ -47,15 +47,15 @@ migration_id_map
 
 ### Mapping
 
-| Source | Target | Rule |
-|---|---|---|
-| `auth.users` | `user` and `account` (Better Auth) | Email lower-cased. `emailVerified` from `email_confirmed_at`. Password per [Auth import](#auth-import). Users with no `budget_users` row are still migrated and get an empty "My Budget". |
-| `budgets` | `budgets` | New UUID. `currency` = `USD`. `created_by` = the budget's owner. |
-| `budget_users` | `budget_members` | The source has no roles. For each budget, the member whose user was created earliest becomes `owner`; other members become `editor`. A `--owner-email` option overrides the choice for all budgets that user belongs to. Budgets with no members are reported and skipped. |
-| `categories` | `categories` | `is_active` null → `true`. Names trimmed. Names that collide case-insensitively within a budget get a numeric suffix (`Food`, `Food (2)`), and each rename is listed in the report. |
-| `expenses` | `transactions` with `type = 'expense'` | `amount_cents` = amount × 100 computed with exact decimal arithmetic on the text value, never floats. A `category_id` that does not exist or belongs to another budget becomes null and is reported. |
-| `incomes` | `transactions` with `type = 'income'` | Empty name → `"Income"`. `category_id` null. |
-| dates | `date` | Read as text (`::date::text`) and written unchanged. Timestamps in the source, if any, are converted to a date in UTC and reported. |
+| Source         | Target                                 | Rule                                                                                                                                                                                                                                                                       |
+| -------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `auth.users`   | `user` and `account` (Better Auth)     | Email lower-cased. `emailVerified` from `email_confirmed_at`. Password per [Auth import](#auth-import). Users with no `budget_users` row are still migrated and get an empty "My Budget".                                                                                  |
+| `budgets`      | `budgets`                              | New UUID. `currency` = `USD`. `created_by` = the budget's owner.                                                                                                                                                                                                           |
+| `budget_users` | `budget_members`                       | The source has no roles. For each budget, the member whose user was created earliest becomes `owner`; other members become `editor`. A `--owner-email` option overrides the choice for all budgets that user belongs to. Budgets with no members are reported and skipped. |
+| `categories`   | `categories`                           | `is_active` null → `true`. Names trimmed. Names that collide case-insensitively within a budget get a numeric suffix (`Food`, `Food (2)`), and each rename is listed in the report.                                                                                        |
+| `expenses`     | `transactions` with `type = 'expense'` | `amount_cents` = amount × 100 computed with exact decimal arithmetic on the text value, never floats. A `category_id` that does not exist or belongs to another budget becomes null and is reported.                                                                       |
+| `incomes`      | `transactions` with `type = 'income'`  | Empty name → `"Income"`. `category_id` null.                                                                                                                                                                                                                               |
+| dates          | `date`                                 | Read as text (`::date::text`) and written unchanged. Timestamps in the source, if any, are converted to a date in UTC and reported.                                                                                                                                        |
 
 Rows that cannot be migrated (amount zero or negative, more than two decimal places that would lose value, null date, missing budget) are **not** silently dropped or fixed: they are listed in the report with the reason, and `run` fails unless `--skip-invalid` is given.
 
@@ -74,19 +74,19 @@ Password hashes are never written to the report, the log or the ID map.
 
 Produced by `run` (both modes) and `verify`. The run fails (and, when not a dry run, rolls back) if any **must-match** check fails.
 
-| Check | Must match |
-|---|---|
-| User count; set of emails | yes |
-| Budget count (minus reported skips) | yes |
-| Membership count; every budget has at least one owner | yes |
-| Category count per budget | yes |
-| Expense count and income count per budget (minus reported skips) | yes |
-| Sum of expense amounts and of income amounts per budget, in cents | yes, to the cent |
-| The same sums per budget per calendar month | yes |
-| Sum of expenses per category per budget | yes |
-| Earliest and latest transaction date per budget | yes |
-| Count of uncategorised expenses per budget | yes, after reported orphan fixes |
-| A random sample of 200 transactions compared field by field through the ID map | yes |
+| Check                                                                          | Must match                       |
+| ------------------------------------------------------------------------------ | -------------------------------- |
+| User count; set of emails                                                      | yes                              |
+| Budget count (minus reported skips)                                            | yes                              |
+| Membership count; every budget has at least one owner                          | yes                              |
+| Category count per budget                                                      | yes                              |
+| Expense count and income count per budget (minus reported skips)               | yes                              |
+| Sum of expense amounts and of income amounts per budget, in cents              | yes, to the cent                 |
+| The same sums per budget per calendar month                                    | yes                              |
+| Sum of expenses per category per budget                                        | yes                              |
+| Earliest and latest transaction date per budget                                | yes                              |
+| Count of uncategorised expenses per budget                                     | yes, after reported orphan fixes |
+| A random sample of 200 transactions compared field by field through the ID map | yes                              |
 
 The report also lists: renamed categories, orphaned category references, skipped rows with reasons, the role assigned to each member, and the duration. The Markdown version is suitable for pasting into the devlog with emails redacted (`--redact`).
 
@@ -94,9 +94,9 @@ The report also lists: renamed categories, orphaned category references, skipped
 
 None. The tool writes through `packages/db` directly, as a system-level operation outside any user session.
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| n/a | n/a | No HTTP surface is added in this milestone | The CLI requires direct database credentials for both systems; it is not reachable over the network and is not included in the production image. |
+| Method | Path | Purpose                                    | Authz                                                                                                                                            |
+| ------ | ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| n/a    | n/a  | No HTTP surface is added in this milestone | The CLI requires direct database credentials for both systems; it is not reachable over the network and is not included in the production image. |
 
 ## UI
 

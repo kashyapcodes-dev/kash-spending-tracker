@@ -118,17 +118,17 @@ At most 100 operations per proposal. An operation may refer to a category create
 
 ### Tools
 
-| Tool | Kind | What it does |
-|---|---|---|
-| `list_categories` | read | Categories with activity and targets |
-| `query_transactions` | read | Filtered list (type, dates, category, text, amount range), capped at 200 rows with a total count |
-| `run_query` | read | An ADR-0003 query; returns series data |
-| `summarize_period` | read | The `reports/summary` result for a range |
-| `compare_periods` | read | The `reports/compare` result |
-| `list_staged_transactions` | read | The review queue (when M5 is present) |
-| `list_dashboards` | read | The user's dashboards and their widgets' titles |
-| `propose_change` | propose | Validates operations, computes a before/after preview, stores a pending proposal, returns its ID and preview. Changes nothing. |
-| `create_widget` | preview | Validates a `WidgetSpec`, runs its query for a preview, and returns the spec and preview. The widget is added to a dashboard only when the user clicks "Add to dashboard" in the chat. |
+| Tool                       | Kind    | What it does                                                                                                                                                                           |
+| -------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `list_categories`          | read    | Categories with activity and targets                                                                                                                                                   |
+| `query_transactions`       | read    | Filtered list (type, dates, category, text, amount range), capped at 200 rows with a total count                                                                                       |
+| `run_query`                | read    | An ADR-0003 query; returns series data                                                                                                                                                 |
+| `summarize_period`         | read    | The `reports/summary` result for a range                                                                                                                                               |
+| `compare_periods`          | read    | The `reports/compare` result                                                                                                                                                           |
+| `list_staged_transactions` | read    | The review queue (when M5 is present)                                                                                                                                                  |
+| `list_dashboards`          | read    | The user's dashboards and their widgets' titles                                                                                                                                        |
+| `propose_change`           | propose | Validates operations, computes a before/after preview, stores a pending proposal, returns its ID and preview. Changes nothing.                                                         |
+| `create_widget`            | preview | Validates a `WidgetSpec`, runs its query for a preview, and returns the spec and preview. The widget is added to a dashboard only when the user clicks "Add to dashboard" in the chat. |
 
 Tool input schemas are the zod contracts, exported as JSON Schema. Tool results are data only. All tools execute through `packages/core` services with the actor being the chatting user and the budget fixed by the conversation, so the role checks from M1 apply unchanged: a viewer's agent can read and cannot create proposals.
 
@@ -158,23 +158,23 @@ With no provider configured, the chat entry point is hidden, AI endpoints return
 
 ## API endpoints
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/ai/status` | Whether AI is configured, and the provider and model names | Authenticated. No keys. |
-| GET | `/api/v1/budgets/{budgetId}/ai/conversations` | The caller's conversations in this budget | Member; filtered to the caller |
-| POST | `/api/v1/budgets/{budgetId}/ai/conversations` | Start a conversation | Member |
-| GET | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}` | Messages | Member, and the conversation must be the caller's (`404` otherwise) |
-| DELETE | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}` | Delete with its messages. Proposals and audit entries are kept. | Member, and the conversation must be the caller's |
-| POST | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}/messages` | Send a message; the response is a server-sent event stream of text, tool events, proposals and widget previews | Member, and the conversation must be the caller's. Tools run with the caller's role. Subject to the usage hook. |
-| GET | `/api/v1/budgets/{budgetId}/proposals` | List proposals; filter by status | Member. Viewers see proposals and cannot decide them. |
-| GET | `/api/v1/budgets/{budgetId}/proposals/{proposalId}` | One proposal with operations and preview | Member; proposal must belong to the budget |
-| POST | `/api/v1/budgets/{budgetId}/proposals` | Create a proposal from operations (used by MCP and by the chat's tool) | Editor; every referenced ID must belong to the budget; token scope `read_propose` when using a token |
-| POST | `/api/v1/budgets/{budgetId}/proposals/{proposalId}/approve` | Apply it | Editor, with a browser session. **Refused for personal access tokens** (`403`), so an AI client can never approve its own proposal. Each operation is re-checked against the approver's role when applied. |
-| POST | `/api/v1/budgets/{budgetId}/proposals/{proposalId}/reject` | Reject | Editor, browser session only |
-| GET | `/api/v1/budgets/{budgetId}/agent-audit` | Audit log, newest first, paginated | Owner |
-| GET | `/api/v1/me/tokens` | The caller's tokens (name, prefix, scope, last used). Never the token. | Authenticated; own tokens only |
-| POST | `/api/v1/me/tokens` | Create `{ name, scope, budgetIds?, expiresAt? }`; returns the token once | Authenticated, browser session only; `budgetIds` must be budgets the caller belongs to |
-| DELETE | `/api/v1/me/tokens/{tokenId}` | Revoke | Authenticated; own tokens only |
+| Method | Path                                                                    | Purpose                                                                                                        | Authz                                                                                                                                                                                                      |
+| ------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/v1/ai/status`                                                     | Whether AI is configured, and the provider and model names                                                     | Authenticated. No keys.                                                                                                                                                                                    |
+| GET    | `/api/v1/budgets/{budgetId}/ai/conversations`                           | The caller's conversations in this budget                                                                      | Member; filtered to the caller                                                                                                                                                                             |
+| POST   | `/api/v1/budgets/{budgetId}/ai/conversations`                           | Start a conversation                                                                                           | Member                                                                                                                                                                                                     |
+| GET    | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}`          | Messages                                                                                                       | Member, and the conversation must be the caller's (`404` otherwise)                                                                                                                                        |
+| DELETE | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}`          | Delete with its messages. Proposals and audit entries are kept.                                                | Member, and the conversation must be the caller's                                                                                                                                                          |
+| POST   | `/api/v1/budgets/{budgetId}/ai/conversations/{conversationId}/messages` | Send a message; the response is a server-sent event stream of text, tool events, proposals and widget previews | Member, and the conversation must be the caller's. Tools run with the caller's role. Subject to the usage hook.                                                                                            |
+| GET    | `/api/v1/budgets/{budgetId}/proposals`                                  | List proposals; filter by status                                                                               | Member. Viewers see proposals and cannot decide them.                                                                                                                                                      |
+| GET    | `/api/v1/budgets/{budgetId}/proposals/{proposalId}`                     | One proposal with operations and preview                                                                       | Member; proposal must belong to the budget                                                                                                                                                                 |
+| POST   | `/api/v1/budgets/{budgetId}/proposals`                                  | Create a proposal from operations (used by MCP and by the chat's tool)                                         | Editor; every referenced ID must belong to the budget; token scope `read_propose` when using a token                                                                                                       |
+| POST   | `/api/v1/budgets/{budgetId}/proposals/{proposalId}/approve`             | Apply it                                                                                                       | Editor, with a browser session. **Refused for personal access tokens** (`403`), so an AI client can never approve its own proposal. Each operation is re-checked against the approver's role when applied. |
+| POST   | `/api/v1/budgets/{budgetId}/proposals/{proposalId}/reject`              | Reject                                                                                                         | Editor, browser session only                                                                                                                                                                               |
+| GET    | `/api/v1/budgets/{budgetId}/agent-audit`                                | Audit log, newest first, paginated                                                                             | Owner                                                                                                                                                                                                      |
+| GET    | `/api/v1/me/tokens`                                                     | The caller's tokens (name, prefix, scope, last used). Never the token.                                         | Authenticated; own tokens only                                                                                                                                                                             |
+| POST   | `/api/v1/me/tokens`                                                     | Create `{ name, scope, budgetIds?, expiresAt? }`; returns the token once                                       | Authenticated, browser session only; `budgetIds` must be budgets the caller belongs to                                                                                                                     |
+| DELETE | `/api/v1/me/tokens/{tokenId}`                                           | Revoke                                                                                                         | Authenticated; own tokens only                                                                                                                                                                             |
 
 Token authentication: `Authorization: Bearer kash_...`. A token acts as its user with these extra limits: scope `read` allows only `GET` and the widget query and validate endpoints; `read_propose` adds proposal creation; no token may approve or reject proposals, manage tokens, members, invites or bank connections, or delete budgets. If `budgetIds` is set, other budgets return `404`. The membership check still runs on every request, so removing a user from a budget cuts off their tokens at once.
 

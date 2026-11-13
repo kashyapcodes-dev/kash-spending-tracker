@@ -15,7 +15,7 @@ Someone with Docker and nothing else can run Kash on their own hardware: copy an
    - `app`: the image, port `3000`, depends on a healthy `db`.
    - `db`: Postgres (current stable major, pinned) with a named volume and a healthcheck.
    - `mailpit` under the compose profile `mail`: a local SMTP catcher for trying email flows. Off by default.
-   The file works both with a locally built image (`build:`) and with the published image (`image:`), chosen by an environment variable with the published image as default.
+     The file works both with a locally built image (`build:`) and with the published image (`image:`), chosen by an environment variable with the published image as default.
 3. **`docker/.env.example`.** Every variable the app reads, with a comment and a safe default or a generation command. See [Configuration](#configuration).
 4. **Configuration module.** One zod-validated environment schema in `packages/core/config`. The app refuses to start with a clear message naming the variable when a required value is missing or malformed. No other code reads `process.env`.
 5. **Migrate on boot.** The container entrypoint runs pending Drizzle migrations before starting the server, guarded by a Postgres advisory lock so two instances starting together do not race. `AUTO_MIGRATE=false` disables it; `pnpm db:migrate` (and the same command inside the container) runs migrations by hand.
@@ -40,25 +40,25 @@ None. Migrations from M1 are applied by the entrypoint.
 
 ## Configuration
 
-| Variable | Required | Default | Meaning |
-|---|---|---|---|
-| `DATABASE_URL` | yes | set by compose | Postgres connection string |
-| `APP_URL` | yes | `http://localhost:3000` | Public base URL; used in emailed links and for origin checks |
-| `AUTH_SECRET` | yes | none | Secret for Better Auth; `.env.example` shows `openssl rand -base64 32`. The app refuses to start with the placeholder value. |
-| `AUTO_MIGRATE` | no | `true` | Run migrations on boot |
-| `SIGNUP_MODE` | no | `open` | `open` or `closed` |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | no | unset | Outgoing email |
-| `LOG_LEVEL` | no | `info` | `debug`, `info`, `warn`, `error` |
-| `POSTGRES_PASSWORD` | yes (compose) | none | Used by the `db` service and interpolated into `DATABASE_URL` |
+| Variable                                                            | Required      | Default                 | Meaning                                                                                                                      |
+| ------------------------------------------------------------------- | ------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                                                      | yes           | set by compose          | Postgres connection string                                                                                                   |
+| `APP_URL`                                                           | yes           | `http://localhost:3000` | Public base URL; used in emailed links and for origin checks                                                                 |
+| `AUTH_SECRET`                                                       | yes           | none                    | Secret for Better Auth; `.env.example` shows `openssl rand -base64 32`. The app refuses to start with the placeholder value. |
+| `AUTO_MIGRATE`                                                      | no            | `true`                  | Run migrations on boot                                                                                                       |
+| `SIGNUP_MODE`                                                       | no            | `open`                  | `open` or `closed`                                                                                                           |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | no            | unset                   | Outgoing email                                                                                                               |
+| `LOG_LEVEL`                                                         | no            | `info`                  | `debug`, `info`, `warn`, `error`                                                                                             |
+| `POSTGRES_PASSWORD`                                                 | yes (compose) | none                    | Used by the `db` service and interpolated into `DATABASE_URL`                                                                |
 
 Use the exact secret variable name Better Auth expects if it differs; record it in the self-hosting doc.
 
 ## API endpoints
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/health` | `200 { "status": "ok", "db": "ok", "version": "<app version>" }`, or `503 { "status": "degraded", "db": "down" }` when the database is unreachable | Public. Exposes only status and version: no host names, no error text, no configuration. |
-| GET | `/api/v1/config` | Public instance settings the UI needs before login: `{ "signupMode", "emailConfigured" }` | Public. Contains no secrets and nothing user-specific. |
+| Method | Path             | Purpose                                                                                                                                            | Authz                                                                                    |
+| ------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| GET    | `/api/v1/health` | `200 { "status": "ok", "db": "ok", "version": "<app version>" }`, or `503 { "status": "degraded", "db": "down" }` when the database is unreachable | Public. Exposes only status and version: no host names, no error text, no configuration. |
+| GET    | `/api/v1/config` | Public instance settings the UI needs before login: `{ "signupMode", "emailConfigured" }`                                                          | Public. Contains no secrets and nothing user-specific.                                   |
 
 ## UI
 

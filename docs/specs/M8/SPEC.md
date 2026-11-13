@@ -43,10 +43,10 @@ Plans are data in code (`core/plans.ts`), not database rows, until billing exist
 
 ```ts
 type Entitlements = {
-  maxBudgets: number | null;            // null = unlimited
+  maxBudgets: number | null; // null = unlimited
   maxMembersPerBudget: number | null;
   maxBankConnections: number | null;
-  bankSyncProviders: ('plaid' | 'simplefin')[];
+  bankSyncProviders: ("plaid" | "simplefin")[];
   aiMessagesPerMonth: number | null;
   aiEnabled: boolean;
 };
@@ -146,18 +146,18 @@ A suspended user's sessions and tokens are rejected with `403 account_suspended`
 
 ## API endpoints
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/config` | Adds `hosted`, `termsVersion` and whether AI and each bank provider are available on this instance | Public. No secrets, nothing user-specific. |
-| GET | `/api/v1/me/entitlements` | The caller's plan, entitlements and current usage against each limit | Authenticated; own data only |
-| POST | `/api/v1/me/export` | Request a data export | Authenticated, browser session only; rate limited to one per day |
-| GET | `/api/v1/me/export/{exportId}` | Status, and a download when ready | Authenticated; the export must be the caller's (`404` otherwise) |
-| DELETE | `/api/v1/me` | Delete the account `{ password, confirmDeleteSharedBudgetIds? }` | Authenticated, browser session only, password re-entered. Refused for personal access tokens. |
-| POST | `/api/v1/me/accept-terms` | Record acceptance of the current terms version | Authenticated |
-| GET | `/api/v1/admin/overview` | Instance totals | Operator. `404` for everyone else, so the admin surface is not discoverable. |
-| GET | `/api/v1/admin/users` | User list with plan and counts; no budget contents | Operator |
-| PATCH | `/api/v1/admin/users/{userId}` | Set plan, suspend or unsuspend; writes the operator audit log | Operator. An operator cannot change their own operator flag or suspend themselves. |
-| GET | `/api/v1/metrics` | Prometheus metrics | Bearer token from `METRICS_TOKEN`; `404` when the variable is unset. Contains no user data. |
+| Method | Path                           | Purpose                                                                                            | Authz                                                                                         |
+| ------ | ------------------------------ | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| GET    | `/api/v1/config`               | Adds `hosted`, `termsVersion` and whether AI and each bank provider are available on this instance | Public. No secrets, nothing user-specific.                                                    |
+| GET    | `/api/v1/me/entitlements`      | The caller's plan, entitlements and current usage against each limit                               | Authenticated; own data only                                                                  |
+| POST   | `/api/v1/me/export`            | Request a data export                                                                              | Authenticated, browser session only; rate limited to one per day                              |
+| GET    | `/api/v1/me/export/{exportId}` | Status, and a download when ready                                                                  | Authenticated; the export must be the caller's (`404` otherwise)                              |
+| DELETE | `/api/v1/me`                   | Delete the account `{ password, confirmDeleteSharedBudgetIds? }`                                   | Authenticated, browser session only, password re-entered. Refused for personal access tokens. |
+| POST   | `/api/v1/me/accept-terms`      | Record acceptance of the current terms version                                                     | Authenticated                                                                                 |
+| GET    | `/api/v1/admin/overview`       | Instance totals                                                                                    | Operator. `404` for everyone else, so the admin surface is not discoverable.                  |
+| GET    | `/api/v1/admin/users`          | User list with plan and counts; no budget contents                                                 | Operator                                                                                      |
+| PATCH  | `/api/v1/admin/users/{userId}` | Set plan, suspend or unsuspend; writes the operator audit log                                      | Operator. An operator cannot change their own operator flag or suspend themselves.            |
+| GET    | `/api/v1/metrics`              | Prometheus metrics                                                                                 | Bearer token from `METRICS_TOKEN`; `404` when the variable is unset. Contains no user data.   |
 
 Existing endpoints gain entitlement checks (create budget, create invite, complete bank link, send AI message) that return `402 limit_reached`. Their authorization rules are unchanged; the entitlement check runs after the role check, so a non-member still gets `404`, never a limit message.
 

@@ -29,16 +29,16 @@ Kash is an open-source (AGPL-3.0), self-hostable budgeting app, built in public.
 
 ## Stack
 
-| Concern | Choice |
-|---|---|
-| Monorepo | Turborepo, pnpm workspaces |
-| Web | Next.js App Router, React, Tailwind, shadcn/ui, recharts |
-| API | Next.js route handlers under `/api/v1`, zod contracts, generated OpenAPI |
-| Database | Postgres, Drizzle ORM and drizzle-kit migrations |
-| Auth | Better Auth |
-| Jobs | pg-boss ([ADR-0004](docs/adr/0004-background-jobs.md)) |
-| Tests | Vitest (unit and API), Playwright (end to end) |
-| CI | GitHub Actions: lint, typecheck, test, docker build |
+| Concern  | Choice                                                                   |
+| -------- | ------------------------------------------------------------------------ |
+| Monorepo | Turborepo, pnpm workspaces                                               |
+| Web      | Next.js App Router, React, Tailwind, shadcn/ui, recharts                 |
+| API      | Next.js route handlers under `/api/v1`, zod contracts, generated OpenAPI |
+| Database | Postgres, Drizzle ORM and drizzle-kit migrations                         |
+| Auth     | Better Auth                                                              |
+| Jobs     | pg-boss ([ADR-0004](docs/adr/0004-background-jobs.md))                   |
+| Tests    | Vitest (unit and API), Playwright (end to end)                           |
+| CI       | GitHub Actions: lint, typecheck, test, docker build                      |
 
 Library versions are chosen at implementation time (latest stable) and pinned in the lockfile. Check the library's current documentation before using an API; do not rely on memory for Better Auth, Drizzle, pg-boss, Plaid or SimpleFIN details.
 

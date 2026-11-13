@@ -4,17 +4,17 @@ Kash is built milestone by milestone. Each milestone has one `SPEC.md` that an a
 
 ## Milestones
 
-| | Milestone | Depends on | Detail level |
-|---|---|---|---|
-| [M0](M0/SPEC.md) | Foundations and build-in-public setup | none | Implementation-ready |
-| [M1](M1/SPEC.md) | Core rebuild on Postgres, Drizzle and Better Auth | M0 | Implementation-ready |
-| [M2](M2/SPEC.md) | Self-host packaging | M1 | Implementation-ready |
-| [M3](M3/SPEC.md) | Migration and cutover | M1, M2 | Implementation-ready |
-| [M4](M4/SPEC.md) | Sharing and PWA | M1, M2 | Complete; revise after M3 |
-| [M5](M5/SPEC.md) | Import and bank sync | M1, M2 | Complete; revise after M4 |
-| [M6](M6/SPEC.md) | Widgets and dashboards | M1 | Complete; revise after M5 |
-| [M7](M7/SPEC.md) | AI agent | M1, M6 | Complete; revise after M6 |
-| [M8](M8/SPEC.md) | Hosted mode (before billing) | M2, M4, M5, M7 | Complete; most likely to change |
+|                  | Milestone                                         | Depends on     | Detail level                    |
+| ---------------- | ------------------------------------------------- | -------------- | ------------------------------- |
+| [M0](M0/SPEC.md) | Foundations and build-in-public setup             | none           | Implementation-ready            |
+| [M1](M1/SPEC.md) | Core rebuild on Postgres, Drizzle and Better Auth | M0             | Implementation-ready            |
+| [M2](M2/SPEC.md) | Self-host packaging                               | M1             | Implementation-ready            |
+| [M3](M3/SPEC.md) | Migration and cutover                             | M1, M2         | Implementation-ready            |
+| [M4](M4/SPEC.md) | Sharing and PWA                                   | M1, M2         | Complete; revise after M3       |
+| [M5](M5/SPEC.md) | Import and bank sync                              | M1, M2         | Complete; revise after M4       |
+| [M6](M6/SPEC.md) | Widgets and dashboards                            | M1             | Complete; revise after M5       |
+| [M7](M7/SPEC.md) | AI agent                                          | M1, M6         | Complete; revise after M6       |
+| [M8](M8/SPEC.md) | Hosted mode (before billing)                      | M2, M4, M5, M7 | Complete; most likely to change |
 
 The first four are sequenced: foundation, core, packaging, cutover. After M3 the owner is using Kash for real, and M4 to M7 can be reordered if priorities change. M8 comes last.
 
@@ -49,21 +49,21 @@ Test ID groups: `AZ` authorization, `U` unit, `API` API behaviour, `I` integrati
 
 Every row of the decision table in [ADR-0001](../adr/0001-foundational-decisions.md), and where it is delivered.
 
-| Decision | Delivered in | How |
-|---|---|---|
-| Repo: fresh public monorepo, Turborepo and pnpm | M0 | Workspace, packages, tooling |
-| Licence: AGPL-3.0, one repo, hosted by configuration | M0, M2, M8 | Licence file; source link in the app footer; `HOSTED_MODE` with no private code |
-| Backend: Postgres, Drizzle, Better Auth; authz in the service layer | M1, M2, M3 | Schema and services; one app container plus Postgres; leaving Supabase |
-| API: versioned REST, zod contracts, OpenAPI, typed client | M1, M7 | `/api/v1`, generated document and client; MCP and AI tools use the same API |
-| Mobile: PWA first, native later | M4 | Manifest, service worker, offline read views, mobile layouts |
-| Tenancy: multiple budgets, sharing, owner / editor / viewer | M1, M4 | Data model and role enforcement; invites and member management |
-| Bank sync: provider interface, Plaid and SimpleFIN, read-only, review queue | M5, M8 | Adapters, encrypted tokens, scheduled sync, review queue; managed keys when hosted |
-| CSV: mapping wizard, presets, community presets, fuzzy categorise | M1, M5 | Ported parser and matcher with built-in presets; wizard and saved presets |
-| AI: pluggable provider, Claude default, Q&A, confirmed writes, widgets, MCP | M7, M8 | Providers, tools, proposals, chat, MCP server; usage limits when hosted |
-| Dashboards: widget registry, saved layouts, one spec for AI | M6, M7 | Registry, grid editor, templates; `create_widget` emits the same spec |
-| Billing: deferred; flag and seams only | M8 | `HOSTED_MODE`, entitlements, `BillingProvider` interface with a static implementation |
-| Migration: one-time Supabase script, auth import | M3 | CLI with dry run and verification report; bcrypt import or forced reset |
-| Quality: Vitest, Playwright, authz tests per endpoint, CI, agent docs | M0, M1, then all | Tooling and CI; authz matrix; every later spec extends it |
-| Content workflow: milestone = episode, specs, devlog, ADRs, public | M0, then all | Templates and this folder; a devlog prompt in every spec |
+| Decision                                                                    | Delivered in     | How                                                                                   |
+| --------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------- |
+| Repo: fresh public monorepo, Turborepo and pnpm                             | M0               | Workspace, packages, tooling                                                          |
+| Licence: AGPL-3.0, one repo, hosted by configuration                        | M0, M2, M8       | Licence file; source link in the app footer; `HOSTED_MODE` with no private code       |
+| Backend: Postgres, Drizzle, Better Auth; authz in the service layer         | M1, M2, M3       | Schema and services; one app container plus Postgres; leaving Supabase                |
+| API: versioned REST, zod contracts, OpenAPI, typed client                   | M1, M7           | `/api/v1`, generated document and client; MCP and AI tools use the same API           |
+| Mobile: PWA first, native later                                             | M4               | Manifest, service worker, offline read views, mobile layouts                          |
+| Tenancy: multiple budgets, sharing, owner / editor / viewer                 | M1, M4           | Data model and role enforcement; invites and member management                        |
+| Bank sync: provider interface, Plaid and SimpleFIN, read-only, review queue | M5, M8           | Adapters, encrypted tokens, scheduled sync, review queue; managed keys when hosted    |
+| CSV: mapping wizard, presets, community presets, fuzzy categorise           | M1, M5           | Ported parser and matcher with built-in presets; wizard and saved presets             |
+| AI: pluggable provider, Claude default, Q&A, confirmed writes, widgets, MCP | M7, M8           | Providers, tools, proposals, chat, MCP server; usage limits when hosted               |
+| Dashboards: widget registry, saved layouts, one spec for AI                 | M6, M7           | Registry, grid editor, templates; `create_widget` emits the same spec                 |
+| Billing: deferred; flag and seams only                                      | M8               | `HOSTED_MODE`, entitlements, `BillingProvider` interface with a static implementation |
+| Migration: one-time Supabase script, auth import                            | M3               | CLI with dry run and verification report; bcrypt import or forced reset               |
+| Quality: Vitest, Playwright, authz tests per endpoint, CI, agent docs       | M0, M1, then all | Tooling and CI; authz matrix; every later spec extends it                             |
+| Content workflow: milestone = episode, specs, devlog, ADRs, public          | M0, then all     | Templates and this folder; a devlog prompt in every spec                              |
 
 Open questions from the plan, resolved by ADR: transactions table ([0002](../adr/0002-transactions-table.md), used from M1), widget query DSL ([0003](../adr/0003-widget-query-dsl.md), M6), background jobs ([0004](../adr/0004-background-jobs.md), M5), encryption at rest ([0005](../adr/0005-encryption-at-rest.md), M5).

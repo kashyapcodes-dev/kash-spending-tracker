@@ -17,20 +17,20 @@ A widget's data request is a JSON object validated by a zod schema in `packages/
 ```jsonc
 {
   "version": 1,
-  "source": "transactions",                  // the only source in v1
+  "source": "transactions", // the only source in v1
   "filters": {
-    "type": "expense",                       // "expense" | "income" | omitted for both
-    "categoryIds": ["<uuid>"],               // optional, max 50; null entry means uncategorised
-    "excludeCategoryIds": ["<uuid>"],        // optional, max 50
+    "type": "expense", // "expense" | "income" | omitted for both
+    "categoryIds": ["<uuid>"], // optional, max 50; null entry means uncategorised
+    "excludeCategoryIds": ["<uuid>"], // optional, max 50
     "dateRange": { "preset": "this_month" }, // or { "from": "YYYY-MM-DD", "to": "YYYY-MM-DD" }
     "amountCents": { "min": 0, "max": 50000 }, // optional
-    "nameContains": "coffee"                 // optional, max 100 chars, matched with ILIKE, escaped
+    "nameContains": "coffee", // optional, max 100 chars, matched with ILIKE, escaped
   },
-  "groupBy": "category",                     // "none" | "category" | "type" | "day" | "week" | "month" | "year"
-  "measure": "sum",                          // "sum" | "count" | "avg" | "rows"
-  "sort": { "by": "value", "dir": "desc" },  // by: "value" | "key"
-  "limit": 10,                               // 1 to 500, default 100
-  "compare": "previous_period"               // optional: "previous_period" | "previous_year"
+  "groupBy": "category", // "none" | "category" | "type" | "day" | "week" | "month" | "year"
+  "measure": "sum", // "sum" | "count" | "avg" | "rows"
+  "sort": { "by": "value", "dir": "desc" }, // by: "value" | "key"
+  "limit": 10, // 1 to 500, default 100
+  "compare": "previous_period", // optional: "previous_period" | "previous_year"
 }
 ```
 
@@ -42,10 +42,10 @@ With `groupBy: "none"`, the measures `sum`, `count` and `avg` return a single va
 
 ```jsonc
 {
-  "series": [ { "key": "<group key>", "label": "Groceries", "value": 43210 } ],
-  "compare": [ { "key": "<group key>", "label": "Groceries", "value": 39800 } ], // when requested
-  "unit": "cents",        // "cents" for sum and avg, "count" for count
-  "range": { "from": "2026-11-01", "to": "2026-11-30" }
+  "series": [{ "key": "<group key>", "label": "Groceries", "value": 43210 }],
+  "compare": [{ "key": "<group key>", "label": "Groceries", "value": 39800 }], // when requested
+  "unit": "cents", // "cents" for sum and avg, "count" for count
+  "range": { "from": "2026-11-01", "to": "2026-11-30" },
 }
 ```
 

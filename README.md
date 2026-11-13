@@ -21,17 +21,17 @@ Kash is being built in public for [kashyap.codes](https://kashyap.codes). The pr
 
 Each milestone has one spec and one episode.
 
-| Milestone | Outcome | Spec |
-|---|---|---|
-| M0 | Monorepo, tooling, CI, agent instructions | [SPEC](docs/specs/M0/SPEC.md) |
-| M1 | Core app on Postgres, Drizzle and Better Auth | [SPEC](docs/specs/M1/SPEC.md) |
-| M2 | Self-host packaging with Docker | [SPEC](docs/specs/M2/SPEC.md) |
-| M3 | Migration from the original Supabase app and cutover | [SPEC](docs/specs/M3/SPEC.md) |
-| M4 | Budget sharing and PWA | [SPEC](docs/specs/M4/SPEC.md) |
-| M5 | CSV import wizard and bank sync | [SPEC](docs/specs/M5/SPEC.md) |
-| M6 | Widgets and dashboards | [SPEC](docs/specs/M6/SPEC.md) |
-| M7 | AI agent and MCP server | [SPEC](docs/specs/M7/SPEC.md) |
-| M8 | Hosted mode (before billing) | [SPEC](docs/specs/M8/SPEC.md) |
+| Milestone | Outcome                                              | Spec                          |
+| --------- | ---------------------------------------------------- | ----------------------------- |
+| M0        | Monorepo, tooling, CI, agent instructions            | [SPEC](docs/specs/M0/SPEC.md) |
+| M1        | Core app on Postgres, Drizzle and Better Auth        | [SPEC](docs/specs/M1/SPEC.md) |
+| M2        | Self-host packaging with Docker                      | [SPEC](docs/specs/M2/SPEC.md) |
+| M3        | Migration from the original Supabase app and cutover | [SPEC](docs/specs/M3/SPEC.md) |
+| M4        | Budget sharing and PWA                               | [SPEC](docs/specs/M4/SPEC.md) |
+| M5        | CSV import wizard and bank sync                      | [SPEC](docs/specs/M5/SPEC.md) |
+| M6        | Widgets and dashboards                               | [SPEC](docs/specs/M6/SPEC.md) |
+| M7        | AI agent and MCP server                              | [SPEC](docs/specs/M7/SPEC.md) |
+| M8        | Hosted mode (before billing)                         | [SPEC](docs/specs/M8/SPEC.md) |
 
 ## Documentation
 

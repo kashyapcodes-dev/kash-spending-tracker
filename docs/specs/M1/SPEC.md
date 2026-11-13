@@ -97,28 +97,28 @@ Conventions:
 
 "Authz" below gives the minimum role, as enforced by `requireBudgetRole`. "Member" means any role.
 
-| Method | Path | Purpose | Authz |
-|---|---|---|---|
-| GET | `/api/v1/health` | Liveness (from M0) | Public |
-| GET | `/api/v1/openapi.json` | Generated OpenAPI 3.1 document | Public |
-| GET | `/api/v1/me` | Current user `{ id, email, name }` and their budgets with role | Authenticated; returns only the caller's own data |
-| GET | `/api/v1/budgets` | List budgets the caller belongs to | Authenticated; filtered to the caller's memberships |
-| POST | `/api/v1/budgets` | Create a budget `{ name, currency? }`; the caller becomes owner | Authenticated |
-| GET | `/api/v1/budgets/{budgetId}` | Get one budget with the caller's role | Member |
-| PATCH | `/api/v1/budgets/{budgetId}` | Rename or change currency | Owner |
-| DELETE | `/api/v1/budgets/{budgetId}` | Delete the budget and all its data. Refused with `409` if it is the caller's only budget. | Owner |
-| GET | `/api/v1/budgets/{budgetId}/categories` | List categories; optional `?active=` filter (`true` or `false`); each has `transactionCount` | Member |
-| POST | `/api/v1/budgets/{budgetId}/categories` | Create `{ name }`; `409` on duplicate name | Editor |
-| PATCH | `/api/v1/budgets/{budgetId}/categories/{categoryId}` | Update `{ name?, isActive? }` | Editor; category must belong to the budget |
-| DELETE | `/api/v1/budgets/{budgetId}/categories/{categoryId}` | Delete; its transactions become uncategorised | Editor; category must belong to the budget |
-| GET | `/api/v1/budgets/{budgetId}/transactions` | List; filters `type`, `from`, `to`, `categoryId` (`none` for uncategorised), `q` (name contains); sorted by date descending then created time | Member |
-| POST | `/api/v1/budgets/{budgetId}/transactions` | Create one or many: `{ items: [{ type, name, amountCents, date, categoryId?, notes? }] }`, 1 to 500 items, all-or-nothing in one database transaction | Editor; every `categoryId` must belong to the budget |
-| GET | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Get one | Member; transaction must belong to the budget |
-| PATCH | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Update any of `type, name, amountCents, date, categoryId, notes` | Editor; transaction and any new `categoryId` must belong to the budget |
-| DELETE | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Delete | Editor; transaction must belong to the budget |
-| GET | `/api/v1/budgets/{budgetId}/reports/summary` | Dashboard data for `?from=&to=` and optional `excludeCategoryIds=` (comma-separated) | Member |
-| GET | `/api/v1/budgets/{budgetId}/reports/compare` | Two-period comparison for `?aFrom=&aTo=&bFrom=&bTo=` | Member |
-| POST | `/api/v1/budgets/{budgetId}/imports/csv/preview` | Parse an uploaded CSV (multipart, max 5 MB) and return candidate transactions and issues. Writes nothing. | Editor |
+| Method | Path                                                      | Purpose                                                                                                                                               | Authz                                                                  |
+| ------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| GET    | `/api/v1/health`                                          | Liveness (from M0)                                                                                                                                    | Public                                                                 |
+| GET    | `/api/v1/openapi.json`                                    | Generated OpenAPI 3.1 document                                                                                                                        | Public                                                                 |
+| GET    | `/api/v1/me`                                              | Current user `{ id, email, name }` and their budgets with role                                                                                        | Authenticated; returns only the caller's own data                      |
+| GET    | `/api/v1/budgets`                                         | List budgets the caller belongs to                                                                                                                    | Authenticated; filtered to the caller's memberships                    |
+| POST   | `/api/v1/budgets`                                         | Create a budget `{ name, currency? }`; the caller becomes owner                                                                                       | Authenticated                                                          |
+| GET    | `/api/v1/budgets/{budgetId}`                              | Get one budget with the caller's role                                                                                                                 | Member                                                                 |
+| PATCH  | `/api/v1/budgets/{budgetId}`                              | Rename or change currency                                                                                                                             | Owner                                                                  |
+| DELETE | `/api/v1/budgets/{budgetId}`                              | Delete the budget and all its data. Refused with `409` if it is the caller's only budget.                                                             | Owner                                                                  |
+| GET    | `/api/v1/budgets/{budgetId}/categories`                   | List categories; optional `?active=` filter (`true` or `false`); each has `transactionCount`                                                          | Member                                                                 |
+| POST   | `/api/v1/budgets/{budgetId}/categories`                   | Create `{ name }`; `409` on duplicate name                                                                                                            | Editor                                                                 |
+| PATCH  | `/api/v1/budgets/{budgetId}/categories/{categoryId}`      | Update `{ name?, isActive? }`                                                                                                                         | Editor; category must belong to the budget                             |
+| DELETE | `/api/v1/budgets/{budgetId}/categories/{categoryId}`      | Delete; its transactions become uncategorised                                                                                                         | Editor; category must belong to the budget                             |
+| GET    | `/api/v1/budgets/{budgetId}/transactions`                 | List; filters `type`, `from`, `to`, `categoryId` (`none` for uncategorised), `q` (name contains); sorted by date descending then created time         | Member                                                                 |
+| POST   | `/api/v1/budgets/{budgetId}/transactions`                 | Create one or many: `{ items: [{ type, name, amountCents, date, categoryId?, notes? }] }`, 1 to 500 items, all-or-nothing in one database transaction | Editor; every `categoryId` must belong to the budget                   |
+| GET    | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Get one                                                                                                                                               | Member; transaction must belong to the budget                          |
+| PATCH  | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Update any of `type, name, amountCents, date, categoryId, notes`                                                                                      | Editor; transaction and any new `categoryId` must belong to the budget |
+| DELETE | `/api/v1/budgets/{budgetId}/transactions/{transactionId}` | Delete                                                                                                                                                | Editor; transaction must belong to the budget                          |
+| GET    | `/api/v1/budgets/{budgetId}/reports/summary`              | Dashboard data for `?from=&to=` and optional `excludeCategoryIds=` (comma-separated)                                                                  | Member                                                                 |
+| GET    | `/api/v1/budgets/{budgetId}/reports/compare`              | Two-period comparison for `?aFrom=&aTo=&bFrom=&bTo=`                                                                                                  | Member                                                                 |
+| POST   | `/api/v1/budgets/{budgetId}/imports/csv/preview`          | Parse an uploaded CSV (multipart, max 5 MB) and return candidate transactions and issues. Writes nothing.                                             | Editor                                                                 |
 
 Differences from the original that fix its authorization gaps: the dashboard query is scoped to a budget (the original filtered by date only); category update is scoped to a budget (the original updated by ID only); creates take the budget from the path after a membership check (the original trusted `budget_id` in the body); the compare report requires an explicit budget (the original fell back to the user's first).
 
@@ -130,13 +130,23 @@ Differences from the original that fix its authorization gaps: the dashboard que
 {
   "range": { "from": "2026-11-01", "to": "2026-11-11", "days": 11 },
   "totals": {
-    "incomeCents": 500000, "expenseCents": 123456, "netCents": 376544,
-    "expenseCount": 42, "excludedExpenseCount": 3,
-    "avgExpensePerDayCents": 11223
+    "incomeCents": 500000,
+    "expenseCents": 123456,
+    "netCents": 376544,
+    "expenseCount": 42,
+    "excludedExpenseCount": 3,
+    "avgExpensePerDayCents": 11223,
   },
-  "categories": [   // only categories with at least one expense in range, by total descending
-    { "categoryId": "<uuid>|null", "name": "Groceries", "totalCents": 43210, "expenseCount": 12, "excluded": false }
-  ]
+  "categories": [
+    // only categories with at least one expense in range, by total descending
+    {
+      "categoryId": "<uuid>|null",
+      "name": "Groceries",
+      "totalCents": 43210,
+      "expenseCount": 12,
+      "excluded": false,
+    },
+  ],
 }
 ```
 
@@ -148,15 +158,15 @@ Excluded categories (the original's per-category filter toggle) are left out of 
 
 Port these into `packages/core` as pure, unit-tested TypeScript. Keep the behaviour; change only what this spec says.
 
-| Original | New home | Notes |
-|---|---|---|
-| `parseMoney` (CSV import) | `core/money` | Returns integer cents from the string without floats. Handles `$`, commas, spaces, parentheses and leading minus. |
-| `parseCsvDate` | `core/import` | Accepts `MM/dd/yyyy`, `M/d/yyyy`, `MM/dd/yy`, `M/d/yy`, `yyyy-MM-dd`, then ISO. Returns `YYYY-MM-DD`. |
-| `normalizeForMatch`, `buildTokenOrderRegex`, `findMatchingExpense` | `core/import/categorize` | Fuzzy auto-categorise: normalise names (lowercase, strip diacritics and punctuation), exact match first, then tokens in order, preferring the longest matching existing name. Only suggest a category that is active. Matches against the budget's existing expense transactions. |
-| Row validation (`validateAndNormalizeExpense`) | `core/import` | Errors for missing name, invalid amount, invalid date. Non-positive amounts are skipped with a warning. Issues carry `level`, `row`, `name`, `field`, `message`. |
-| CSV shape detection | `core/import/presets` | The three hard-coded parsers become declarative built-in presets (data, not code): `debit-credit` (Description, Transaction Date, Debit, Credit), `single-amount` (Description, Date, Amount) and `withdrawals-deposits` (Description, Date, Withdrawals, Deposits). Detection picks the first preset whose columns are all present. No preset is named after a person. |
-| `summarizePeriod`, `compareCategorySummaries`, inclusive day count | `core/reports` | As described above. |
-| Dashboard aggregation | `core/reports` | Server-side. Per-day average uses the inclusive day count (fixes the original's divide-by-zero on a one-day range). |
+| Original                                                           | New home                 | Notes                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `parseMoney` (CSV import)                                          | `core/money`             | Returns integer cents from the string without floats. Handles `$`, commas, spaces, parentheses and leading minus.                                                                                                                                                                                                                                                       |
+| `parseCsvDate`                                                     | `core/import`            | Accepts `MM/dd/yyyy`, `M/d/yyyy`, `MM/dd/yy`, `M/d/yy`, `yyyy-MM-dd`, then ISO. Returns `YYYY-MM-DD`.                                                                                                                                                                                                                                                                   |
+| `normalizeForMatch`, `buildTokenOrderRegex`, `findMatchingExpense` | `core/import/categorize` | Fuzzy auto-categorise: normalise names (lowercase, strip diacritics and punctuation), exact match first, then tokens in order, preferring the longest matching existing name. Only suggest a category that is active. Matches against the budget's existing expense transactions.                                                                                       |
+| Row validation (`validateAndNormalizeExpense`)                     | `core/import`            | Errors for missing name, invalid amount, invalid date. Non-positive amounts are skipped with a warning. Issues carry `level`, `row`, `name`, `field`, `message`.                                                                                                                                                                                                        |
+| CSV shape detection                                                | `core/import/presets`    | The three hard-coded parsers become declarative built-in presets (data, not code): `debit-credit` (Description, Transaction Date, Debit, Credit), `single-amount` (Description, Date, Amount) and `withdrawals-deposits` (Description, Date, Withdrawals, Deposits). Detection picks the first preset whose columns are all present. No preset is named after a person. |
+| `summarizePeriod`, `compareCategorySummaries`, inclusive day count | `core/reports`           | As described above.                                                                                                                                                                                                                                                                                                                                                     |
+| Dashboard aggregation                                              | `core/reports`           | Server-side. Per-day average uses the inclusive day count (fixes the original's divide-by-zero on a one-day range).                                                                                                                                                                                                                                                     |
 
 Import flow, unchanged from the original in shape: the preview endpoint returns `{ candidates: [{ name, amountCents, date, suggestedCategoryId | null }], issues: [...] }`. The UI loads the candidates into the multi-row expense form for the user to fix and categorise, and submitting the form calls the bulk create endpoint. Status codes: `200` with candidates (issues may be present), `422` when no row could be parsed.
 
