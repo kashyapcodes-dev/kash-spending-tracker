@@ -19,6 +19,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.11",
     "turbo": "^2.11.11",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^3.2.7"
   }
 }
