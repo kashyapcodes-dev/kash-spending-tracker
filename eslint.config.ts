@@ -119,4 +119,45 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    // Dependency direction: core must not import next or apps/*
+    // (declared last: rule options replace, not merge, so keep the .js ban too)
+    files: ["packages/core/**/*.?([jt])s?(x)"],
+    rules: {
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            { group: ["*.js", "*.jsx"], message: "Use .ts/.tsx instead" },
+            {
+              group: ["next", "next/*"],
+              message: "packages/core must not import from next",
+            },
+            {
+              group: ["**/apps/*", "**/apps/**", "@kash/web", "@kash/mcp"],
+              message: "packages/core must not import from apps/*",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Dependency direction: contract is a leaf and must not import @kash/*
+    files: ["packages/contract/**/*.?([jt])s?(x)"],
+    rules: {
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            { group: ["*.js", "*.jsx"], message: "Use .ts/.tsx instead" },
+            {
+              group: ["@kash/*"],
+              message: "packages/contract must not import @kash/* packages",
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
