@@ -28,6 +28,22 @@ export const envSchema = z
         /^postgres(ql)?:\/\/.+/,
         "must be a postgres:// connection string",
       ),
+    /** Migrations run as the schema owner (ADR-0014). Unset: DATABASE_URL is used, with a warning. */
+    DATABASE_MIGRATION_URL: z.preprocess(
+      v => (v === "" ? undefined : v),
+      z
+        .string()
+        .regex(/^postgres(ql)?:\/\/.+/)
+        .optional(),
+    ),
+    /** pg-boss connects here and works in its own schema. Unset: the migration or app URL. */
+    DATABASE_JOBS_URL: z.preprocess(
+      v => (v === "" ? undefined : v),
+      z
+        .string()
+        .regex(/^postgres(ql)?:\/\/.+/)
+        .optional(),
+    ),
     APP_URL: z.url().default("http://localhost:3000"),
     AUTH_SECRET: z
       .string()
@@ -59,6 +75,8 @@ export const envSchema = z
     PLAID_ENV: z
       .enum(["sandbox", "development", "production"])
       .default("sandbox"),
+    /** `none`, `loopback`, or a CIDR list: which proxies may set X-Forwarded-For (ADR-0013). */
+    TRUSTED_PROXY: z.string().default("none"),
     PLAID_WEBHOOKS: boolish(false),
     /** Extra hosts (comma separated) allowed for SimpleFIN setup and access URLs. */
     SIMPLEFIN_ALLOWED_HOSTS: optionalString,
@@ -82,6 +100,10 @@ export const envSchema = z
       v => (v === "" ? undefined : v),
       z.coerce.number().int().min(1).optional(),
     ),
+    /** Self-host only: with no SMTP, write password-reset links to the server log. Off by default. */
+    KASH_LOG_RESET_LINKS: boolish(false),
+    /** Opt in to email verification. Refused unless SMTP (or the test mail file) is configured. */
+    REQUIRE_EMAIL_VERIFICATION: boolish(false),
     /** Test only: append password-reset emails to this file as JSON lines. */
     KASH_MAIL_FILE: optionalString,
     /** Test only: Better Auth rate-limits sign-in and sign-up per IP; end-to-end tests share one IP. */
@@ -112,6 +134,13 @@ export const envSchema = z
         code: "custom",
         path: [key],
         message: `is required when AI_PROVIDER=${env.AI_PROVIDER}`,
+      });
+    if (env.REQUIRE_EMAIL_VERIFICATION && !env.SMTP_HOST && !env.KASH_MAIL_FILE)
+      ctx.addIssue({
+        code: "custom",
+        path: ["REQUIRE_EMAIL_VERIFICATION"],
+        message:
+          "needs SMTP_HOST: verification emails cannot be sent without it",
       });
     if (env.SMTP_HOST && !env.SMTP_FROM) {
       ctx.addIssue({

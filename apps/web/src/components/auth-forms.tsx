@@ -191,7 +191,11 @@ export function ForgotPasswordForm() {
     });
     if (error) return error.message ?? "Could not send the link";
     f.setNotice(
-      "If that address has an account, a reset link was sent. If no email server is configured, the link is in the server log.",
+      !instance || instance.emailConfigured
+        ? "If that address has an account, a reset link was sent."
+        : instance.resetLinksInLog
+          ? "If that address has an account, a reset link was sent to the server log."
+          : "This instance cannot send email, so reset links are not available. Ask the instance administrator to reset your password.",
     );
   });
   return (
@@ -209,8 +213,10 @@ export function ForgotPasswordForm() {
         </Field>
         {instance && !instance.emailConfigured ? (
           <p role="note" className="text-sm text-muted-foreground">
-            Email is not configured on this instance. The reset link is written
-            to the server log; ask whoever runs this server.
+            Email is not configured on this instance.{" "}
+            {instance.resetLinksInLog
+              ? "The reset link is written to the server log; ask whoever runs this server."
+              : "Reset links are not available; ask the instance administrator to reset your password."}
           </p>
         ) : null}
         <ErrorText>{f.error}</ErrorText>

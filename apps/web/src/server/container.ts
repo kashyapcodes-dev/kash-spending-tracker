@@ -4,7 +4,9 @@ import {
   type SyncDeps,
   type BankDeps,
   createRateLimiter,
+  parseTrustedProxy,
   type RateLimiter,
+  type TrustedProxy,
   createServices,
   agentService,
   dailyLimitHook,
@@ -29,7 +31,7 @@ import {
   simplefinProvider,
 } from "@kash/integrations";
 import { readConfig } from "./env";
-import { deliverInvite, deliverResetLink } from "./mailer";
+import { deliverInvite, deliverResetLink, deliverVerification } from "./mailer";
 
 export interface Container {
   config: Config;
@@ -37,6 +39,11 @@ export interface Container {
   auth: Auth;
   services: Services;
   limiter: RateLimiter;
+  /** One-hour window, for limits such as 3 verification emails an hour. */
+  hourlyLimiter: RateLimiter;
+  trustedProxy: TrustedProxy;
+  /** REQUIRE_EMAIL_VERIFICATION: unverified accounts are held at the gate. */
+  requireVerification: boolean;
   appUrl: string;
   /** Present only when APP_ENCRYPTION_KEY is set. */
   syncDeps: SyncDeps | null;
@@ -63,6 +70,17 @@ export function getContainer(): Container {
     disableRateLimit: config.KASH_DISABLE_AUTH_RATE_LIMIT,
     signupMode: config.SIGNUP_MODE,
     sendResetPassword: ({ email, url }) => deliverResetLink(config, email, url),
+    ...(config.REQUIRE_EMAIL_VERIFICATION
+      ? {
+          sendVerificationEmail: ({
+            email,
+            url,
+          }: {
+            email: string;
+            url: string;
+          }) => deliverVerification(config, email, url),
+        }
+      : {}),
   });
   const box = config.APP_ENCRYPTION_KEY
     ? createSecretBox(
@@ -174,6 +192,12 @@ export function getContainer(): Container {
     limiter: createRateLimiter({
       enabled: !config.KASH_DISABLE_AUTH_RATE_LIMIT,
     }),
+    hourlyLimiter: createRateLimiter({
+      enabled: !config.KASH_DISABLE_AUTH_RATE_LIMIT,
+      windowMs: 3_600_000,
+    }),
+    trustedProxy: parseTrustedProxy(config.TRUSTED_PROXY),
+    requireVerification: config.REQUIRE_EMAIL_VERIFICATION,
     appUrl: config.APP_URL,
   };
   holder[KEY] = container;
