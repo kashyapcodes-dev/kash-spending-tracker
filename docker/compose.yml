@@ -1,0 +1,71 @@
+# Kash self-host stack. Quick start: see docs/self-hosting.md.
+#   cp docker/.env.example docker/.env   (then fill in the two secrets; docker/setup-env.sh does it)
+#   docker compose -f docker/compose.yml up -d --wait
+#
+# Image: pulls ${KASH_IMAGE} by default. To build it from this checkout instead:
+#   docker compose -f docker/compose.yml up -d --build
+name: kash
+
+services:
+  app:
+    image: ${KASH_IMAGE:-ghcr.io/kashyapcodes-dev/kash-spending-tracker:latest}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Least privilege (ADR-0014): the app runs as kash_app, migrations as kash_migrator, pg-boss as kash_jobs.
+      DATABASE_URL: postgres://kash_app:${KASH_APP_DB_PASSWORD:-${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in the environment file}}@db:5432/kash
+      DATABASE_MIGRATION_URL: postgres://kash_migrator:${KASH_MIGRATOR_DB_PASSWORD:-${POSTGRES_PASSWORD}}@db:5432/kash
+      DATABASE_JOBS_URL: postgres://kash_jobs:${KASH_JOBS_DB_PASSWORD:-${POSTGRES_PASSWORD}}@db:5432/kash
+      TRUSTED_PROXY: ${TRUSTED_PROXY:-none}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-false}
+      KASH_LOG_RESET_LINKS: ${KASH_LOG_RESET_LINKS:-false}
+      SIMPLEFIN_ALLOWED_HOSTS: ${SIMPLEFIN_ALLOWED_HOSTS:-}
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      AUTH_SECRET: ${AUTH_SECRET:-}
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+      SIGNUP_MODE: ${SIGNUP_MODE:-open}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kash
+      POSTGRES_DB: kash
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in docker/.env}
+      KASH_APP_DB_PASSWORD: ${KASH_APP_DB_PASSWORD:-}
+      KASH_MIGRATOR_DB_PASSWORD: ${KASH_MIGRATOR_DB_PASSWORD:-}
+      KASH_JOBS_DB_PASSWORD: ${KASH_JOBS_DB_PASSWORD:-}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # First start only: creates the kash_migrator, kash_app and kash_jobs roles.
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kash -d kash"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Local SMTP catcher for trying email flows. Off unless you run with: --profile mail
+  # Then set SMTP_HOST=mailpit, SMTP_PORT=1025, SMTP_FROM=kash@localhost in docker/.env.
+  mailpit:
+    profiles: ["mail"]
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025"
+
+volumes:
+  pgdata:

@@ -2,9 +2,10 @@
   "name": "kash-spending-tracker",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "packageManager": "pnpm@10.27.0",
   "engines": {
-    "node": "24"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "turbo run dev",
@@ -13,22 +14,33 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md,yml,yaml}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,json,md,yml,yaml}\""
+    "test:security": "sh tools/test-security.sh",
+    "format": "turbo run //#prettier:write",
+    "format:check": "turbo run //#prettier:check",
+    "prettier:write": "prettier --write .",
+    "prettier:check": "prettier --check .",
+    "check:repo": "tsx tools/check-repo.ts",
+    "db:up": "docker compose -f docker/compose.dev.yml up -d --wait",
+    "db:generate": "pnpm --filter @kash/db db:generate",
+    "db:migrate": "pnpm --filter @kash/db db:migrate",
+    "db:seed": "tsx tools/seed.ts",
+    "kash": "tsx tools/kash.ts"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
-    "@tsconfig/node20": "^20.1.11",
-    "@types/eslint": "^9.6.0",
-    "eslint": "^9.23.0",
-    "eslint-plugin-import": "^2.31.0",
+    "@eslint/js": "^9.23.0",
+    "esbuild": "^0.28.2",
+    "eslint": "catalog:",
     "globals": "^15.14.0",
     "jiti": "^2.4.2",
-    "prettier": "^3.10.1",
+    "prettier": "catalog:",
     "tsx": "^4.19.2",
-    "turbo": "^2.11.11",
-    "typescript": "~5.8.0",
+    "turbo": "^2.5.0",
+    "typescript": "catalog:",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^3.2.7"
+    "vitest": "catalog:"
+  },
+  "dependencies": {
+    "@kash/core": "workspace:*",
+    "@kash/db": "workspace:*"
   }
 }
