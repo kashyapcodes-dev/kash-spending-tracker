@@ -33,3 +33,7 @@ backups/
 !.vscode/extensions.json
 .DS_Store
 *.log
+
+# docs are local only, except self-hosting
+docs/*
+!docs/self-hosting.md
